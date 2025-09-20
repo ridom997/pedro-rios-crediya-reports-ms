@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 @Log4j2
 @Builder
-public class SQSListener {
+public class    SQSListener {
     private final SqsAsyncClient client;
     private final SQSProperties properties;
     private final Function<Message, Mono<Void>> processor;

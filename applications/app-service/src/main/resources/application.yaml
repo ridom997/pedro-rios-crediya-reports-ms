@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8082
 spring:
   application:
     name: "ReportingService"
@@ -10,16 +10,32 @@ spring:
       enabled: true
       path: "/h2"
   profiles:
+    active: "local"
     include: null
 entrypoint:
   sqs:
     region: "us-east-1"
-    endpoint: "http://localhost:4566"
-    queueUrl: "http://localhost:4566/000000000000/sample"
+    queueUrl: "https://sqs.us-east-1.amazonaws.com/339340413586/updateCounterQueue"
     waitTimeSeconds: 20
     maxNumberOfMessages: 10
     visibilityTimeoutSeconds: 10
     numberOfThreads: 1
 aws:
+  region: "us-east-1"
   dynamodb:
     endpoint: "http://localhost:8000"
+    counters-table: "report_counters"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,prometheus"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+cors:
+  allowed-origins: "http://localhost:4200,http://localhost:8080"
+security:
+  jwt:
+    secret: "${SECURITY_JWT_SECRET:dev-very-long-secret-change-me-please-0123456789}"

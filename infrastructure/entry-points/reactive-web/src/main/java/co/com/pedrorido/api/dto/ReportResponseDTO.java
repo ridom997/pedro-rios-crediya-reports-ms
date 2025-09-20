@@ -1,9 +1,6 @@
-package co.com.pedrorido.model.report;
-import lombok.Builder;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+package co.com.pedrorido.api.dto;
+
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -12,7 +9,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
-public class Report {
+public class ReportResponseDTO {
     private String pk;
     private long approvedLoans;
     private BigDecimal totalAmountLoans;
