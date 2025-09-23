@@ -23,7 +23,7 @@ public class DynamoDBTemplateAdapter extends TemplateAdapterOperations<Report, S
          *  super(repository, mapper, d -> mapper.mapBuilder(d,ObjectModel.ObjectModelBuilder.class).build());
          *  Or using mapper.map with the class of the object model
          */
-        super(connectionFactory, mapper, d -> mapper.map(d, Report.class), "report_counters");
+        super(connectionFactory, mapper, d -> mapper.map(d, Report.class), "report_counters_crediya");
     }
 
     public Mono<List<Report>> getEntityBySomeKeys(String partitionKey, String sortKey) {

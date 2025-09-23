@@ -9,45 +9,32 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
 import software.amazon.awssdk.metrics.MetricPublisher;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
+import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClientBuilder;
 
 import java.net.URI;
 
 @Configuration
 public class DynamoDBConfig {
 
+    // === 2) Ambientes reales de AWS: SIN endpointOverride, SIN mocks ===
     @Bean
-    @Profile("local")
-    public DynamoDbAsyncClient dynamoDbLocalClient(
-            @Value("${aws.dynamodb.endpoint}") String endpoint,
-            @Value("${aws.region}") String region,
-            MetricPublisher publisher
-    ) {
-        return DynamoDbAsyncClient.builder()
-                // Dummy SOLO para DynamoDB local (no toca al resto del proceso)
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create("dummy", "dummy")))
-                .region(Region.of(region))
-                .endpointOverride(URI.create(endpoint))
-                .overrideConfiguration(o -> o.addMetricPublisher(publisher))
-                .build();
-    }
-
-    @Bean
-    @Profile({"dev","cer","pdn"})
+    @Profile({"dev", "cer", "pdn"})
     public DynamoDbAsyncClient dynamoDbAwsClient(
             MetricPublisher publisher,
             @Value("${aws.region}") String region
     ) {
         return DynamoDbAsyncClient.builder()
-                .credentialsProvider(WebIdentityTokenFileCredentialsProvider.create())
                 .region(Region.of(region))
+                .credentialsProvider(DefaultCredentialsProvider.create())
                 .overrideConfiguration(o -> o.addMetricPublisher(publisher))
                 .build();
     }
 
+    // === 3) Enhanced client común ===
     @Bean
     public DynamoDbEnhancedAsyncClient dynamoDbEnhanced(DynamoDbAsyncClient client) {
-        return DynamoDbEnhancedAsyncClient.builder().dynamoDbClient(client).build();
+        return DynamoDbEnhancedAsyncClient.builder()
+                .dynamoDbClient(client)
+                .build();
     }
-
 }
